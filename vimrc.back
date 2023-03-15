@@ -1,0 +1,350 @@
+"----------------------------------------------"
+"               基础设置                        "
+"-----------------------------------------------"
+
+set modelines=0		                     " 禁用模式行（安全措施）
+syntax on                                " 语法高亮
+filetype on                              " 开启文件类型检测
+
+set encoding=utf-8                       " 编码设置
+set number                               " 显示行号
+set relativenumber                       " 显示相对行号
+set smartindent                          " 智能缩进
+set autoindent                           " 自动对齐
+
+set smarttab
+set tabstop=4                            " tab缩进
+set shiftwidth=4                         " 设定自动缩进为4个字符
+set expandtab                            " 用space替代tab的输入
+set splitright                           " 设置左右分割窗口时，新窗口出现在右侧
+set splitbelow                           " 设置水平分割窗口时，新窗口出现在底部
+set fillchars=vert:\⎜,eob:\              " 设置左右分割窗口的分割线样式，以及缓冲区末尾空行的符号 ~
+
+set nobackup                             " 不需要备份
+set noswapfile                           " 禁止生成临时文件
+set autoread                             " 文件自动检测外部更改
+set clipboard=unnamed                    " 共享剪切板
+
+set nocompatible                         " 去除vi一致性
+set ambiwidth=single                     " 处理具有东亚宽度等级歧义的字符（例如欧元、注册标志、版权标志、希腊字母、西里尔字母）
+set nowrap                               " 不自动折行
+set mouse=a                              " 使用鼠标
+set mousehide                            " 输入时隐藏光标
+set sidescroll=10                        " 移动到看不见的字符时，自动向右滚动是个字符
+
+set sm!                                  " 高亮显示匹配括号
+set hlsearch                             " 高亮查找匹配
+" set cursorline                           " 高亮显示当前行
+set termguicolors                        " 启用终端真色
+
+set showmatch                            " 显示匹配
+set ruler                                " 显示标尺，在右下角显示光标位置
+set novisualbell                         " 不要闪烁
+set showcmd                              " 显示输入的命令
+
+set laststatus=2                         " always show statusline
+set showtabline=2                        " always show tabline
+
+
+" 设置光标样式
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+
+set completeopt=longest,menu             " 自动补全配置让Vim补全菜单行为跟IDE一致
+set backspace=indent,eol,start           " 允许用退格键删除字符
+let g:markdown_fenced_languages =['c', 'cpp', 'python', 'javascript']
+" set guifont=Hack_Nerd_Font_Mono:h16      " 设置字体和字体大小, 只对gui客户端起作用，终端使用需要修改终端字体和大小
+" 禁止显示滚动条
+set guioptions-=l
+set guioptions-=L
+set guioptions-=r
+set guioptions-=R
+" 禁止显示菜单和工具条
+set guioptions-=m
+set guioptions-=T
+
+"-----------------------------------------------"
+"               自定义功能                      "
+"-----------------------------------------------"
+
+" 快捷键绑定-------------------------
+let mapleader=' '
+" 窗口移动快捷键
+noremap <TAB>w <C-w>w
+noremap <TAB><left> <C-w><left>
+noremap <TAB><right> <C-w><right>
+noremap <TAB><up> <C-w><up>
+noremap <TAB><down> <C-w><down>
+" 使用方向键切换buffer
+noremap <Leader><left> :bp<CR>
+noremap <Leader><right> :bn<CR>
+" 使用方括号切换tab
+noremap <Leader>] :tabnext<CR>
+noremap <Leader>[ :tabprevious<CR>
+" 使用 \ + s 保存, \ + q 退出
+noremap <Leader>s :w<CR>
+noremap <Leader>q :q<CR>
+
+" 设置netrw--------------------------------------
+" let g:netrw_banner = 0         " 设置是否显示横幅
+" let g:netrw_liststyle = 3      " 设置目录列表样式：树形
+" let g:netrw_browse_split = 4   " 在之前的窗口编辑文件
+" let g:netrw_altv = 1           " 水平分割时，文件浏览器始终显示在左边
+" let g:netrw_winsize = 22       " 设置文件浏览器窗口宽度
+" let g:netrw_list_hide= '^\..*' " 不显示隐藏文件 用 a 键就可以切换显示所有文件、 隐藏匹配文件或只显示匹配文件
+"
+" nnoremap <SPACE>ft :Lexplore<CR>
+
+" 代码运行
+map <F5> :call Run()<CR>
+func! Run()
+    execute "w"
+    if &filetype == 'c'
+        exec "!gcc % -o %<"
+        exec "!time %<"
+    elseif &filetype == 'cpp'
+        exec "!g++ % -o %<"
+        exec "!time %<"
+    elseif &filetype == 'python'
+        exec "!clear"
+        exec "!time python3 %"
+    elseif &filetype == 'html'
+        exec "!time open % &"
+    elseif &filetype == 'javascript'
+        exec "!clear"
+        exec "!node %"
+    elseif &filetype == 'mkd'
+        exec "!~/.vim/markdown.pl % > %.html &"
+        exec "!time open %.html &"
+    endif
+endfunc
+
+"-----------------------------------------------"
+"               插件安装                        "
+"-----------------------------------------------"
+
+call plug#begin('~/.vim/plugged')
+
+" 主题
+Plug 'morhetz/gruvbox'
+" Plug 'joshdick/onedark.vim'
+
+" 括号补全、注释
+Plug 'jiangmiao/auto-pairs'
+Plug 'preservim/nerdcommenter'
+
+" buffer栏、状态栏
+Plug 'itchyny/lightline.vim'
+Plug 'mengelbrecht/lightline-bufferline'
+
+" 多光标选择
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+
+" 对齐线
+Plug 'Yggdroot/indentLine'
+
+" markdown预览
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
+" 格式化
+Plug 'sbdchd/neoformat'
+
+" nerdtree
+Plug 'preservim/nerdtree'
+Plug 'ryanoasis/vim-devicons'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+
+" coc.nvim
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" 前端开发工具emmet  
+Plug 'mattn/emmet-vim'
+Plug 'beautify-web/js-beautify'
+
+" 模糊搜索
+Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
+" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+
+" 启动界面
+Plug 'mhinz/vim-startify'
+
+
+
+call plug#end()
+    
+"---------- set theme ------------
+set vb t_vb=
+" 隐藏缓冲区末尾填充线 (~)
+let g:onedark_hide_endofbuffer=1
+set background=dark
+" colorscheme onedark
+colorscheme gruvbox
+
+"-----------注释-------
+let g:NERDCreateDefaultMappings = 1
+let g:NERDSpaceDelims = 1
+let g:NERDCompactSexyComs = 1
+let g:NERDDefaultAlign = 'left'
+let g:NERDAltDelims_java = 1
+let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
+let g:NERDCommentEmptyLines = 1
+let g:NERDTrimTrailingWhitespace = 1
+let g:NERDToggleCheckAllLines = 1
+
+" 快捷键 ：
+" <leader>ci
+
+"------light-bufferline----------------
+let g:lightline#bufferline#enable_devicons = 1
+let g:lightline#bufferline#enable_nerdfont = 1
+let g:lightline#bufferline#icon_position = 'right'
+let g:lightline#bufferline#show_number = 2
+let g:lightline#bufferline#more_buffers = '...'
+let g:lightline#bufferline#unnamed = '[No Name]'
+let g:lightline = {
+      \ 'colorscheme': 'gruvbox',
+      \ 'tabline': {
+      \   'left': [ ['buffers'] ],
+      \   'right': [ ['close'] ]
+      \ },
+      \ 'component_expand': {
+      \   'buffers': 'lightline#bufferline#buffers'
+      \ },
+      \ 'component_type': {
+      \   'buffers': 'tabsel'
+      \ },
+      \ 'separator': {'left': '', 'right': ''},
+      \ 'subseparator': {'left': '\\', 'right': '\\'},
+      \ 'component_function': {
+      \   'filetype': 'MyFiletype',
+      \   'fileformat': 'MyFileformat',
+      \ }
+      \ }
+
+
+"-------------vim-visual-multi------------
+
+" select words with Ctrl-N (like Ctrl-d in Sublime Text/VS Code)
+" create cursors vertically with Ctrl-Down/Ctrl-Up
+" select one character at a time with Shift-Arrows
+" press n/N to get next/previous occurrence
+" press [/] to select next/previous cursor
+" press q to skip current and get next occurrence
+" press Q to remove current cursor/selection
+" start insert mode with i,a,I,A
+
+"------------indentLine----------
+"解决markdown文件*号隐藏问题
+let g:markdown_syntax_conceal=0
+let g:vim_json_conceal=0
+" 打开coc-explorer的时候关闭indentline
+autocmd FileType coc-explorer :IndentLinesDisable
+
+"------------nerdtree-----------
+" nnoremap <leader>ft :NERDTreeToggle<CR>
+" nnoremap <leader>tf :NERDTreeFind<CR>
+"
+" let NERDTreeQuitOnOpen=0
+" let NERDTreeShowHidden=1
+" let NERDTreeStatusline='--NERDTree--'
+" let NERDTreeWinSize=30
+" let NERDTreeMinimalUI=1
+" let NERDTreeAutoDeleteBuffer=1
+
+"-------------coc-nvim-------------
+let g:coc_global_extensions = ['coc-json', 'coc-vimlsp', 'coc-pyright', 'coc-html', 'coc-css', 'coc-explorer']
+
+" Use tab for trigger completion with characters ahead and navigate
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" Mappings for CoCList
+" Show all diagnostics.显示所有诊断
+nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions.管理扩展
+nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+" Find symbol of current document.
+nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+" 显示命令.
+nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+
+" Use K to show documentation in preview window.显示函数或者命令解释
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+"-------coc-explorer----------
+nnoremap <space>ft <Cmd>CocCommand explorer<CR>
+
+"---------------emmet-vim----------
+let g:user_emmet_install_global = 0
+autocmd FileType html,css EmmetInstall
+" （ Ctrl + e + , ） 调用
+let g:user_emmet_leader_key='<C-e>'
+
+"----------LeaderF----------------
+let g:Lf_HideHelp = 1
+" popup mode
+let g:Lf_WindowPosition = 'popup'
+let g:Lf_PreviewInPopup = 0
+let g:Lf_StlSeparator = { 'left': '' , 'right': '' }
+" let g:Lf_PreviewResult = {'Function': 0, 'BufTag': 0 }
+" 快捷键绑定
+let g:Lf_ShortcutF = "<leader>ff"
+noremap <leader>fb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
+noremap <leader>fm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
+" noremap <leader>fg :<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>
+noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
+" 排除搜索的文件夹和文件
+let g:Lf_WildIgnore = {
+        \ 'dir': ['.svn','.git','.hg','venv','.vscode','.SpaceVim.d'],
+        \ 'file': ['*.sw?','~$*','*.bak','*.exe','*.o','*.so','*.py[co]','*.ttf','*.xls','*.doc','*.zip']
+        \}
+
+" let g:Lf_PreviewResult = {
+        " \ 'File': 1,
+        " \ 'Buffer': 1,
+        " \ 'Mru': 0,
+        " \ 'Tag': 0,
+        " \ 'BufTag': 1,
+        " \ 'Function': 1,
+        " \ 'Line': 0,
+        " \ 'Colorscheme': 0,
+        " \ 'Rg': 0,
+        " \ 'Gtags': 0
+        " \}
+"
+" let g:Lf_PopupWidth = &columns * 1 / 3
+" let g:Lf_PopupPreviewPosition = "right"
+" let g:Lf_PopupColorscheme = 'default'
+let g:Lf_PopupBorders = ["━","┃","━","┃","┏","┓","┛","┗"]
+
+
+
+"----------Startify-------------
+noremap <Leader>bh :Startify<CR>
+
